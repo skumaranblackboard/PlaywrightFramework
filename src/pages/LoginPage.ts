@@ -11,7 +11,6 @@ export class LoginPage {
     private readonly passwordInput: Locator;
     private readonly loginButton: Locator;
     private readonly errorBox: Locator;
-    private readonly loginCredentialsHint: Locator;
 
     constructor(private page: Page) {
         this.log = createLogger('LoginPage');
@@ -19,7 +18,6 @@ export class LoginPage {
         this.passwordInput = page.locator('[placeholder="Password"]');
         this.loginButton = page.getByRole('button', {name: 'Login'} );
         this.errorBox = page.locator('[data-test="error"]');
-        this.loginCredentialsHint = page.locator('[data-test="login-credentials"]');
     }
 
     async open(){
@@ -33,6 +31,12 @@ export class LoginPage {
         await this.loginButton.click();
     }
 
+    async getAlertMessage(): Promise<string | null> {
+        return this.errorBox.textContent();
+    }
 
+    async getValidationErrors() {
+        return this.page.locator('.oxd-input-field-error-message');
+    }
 
 }

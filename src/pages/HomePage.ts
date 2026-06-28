@@ -4,12 +4,10 @@ export class HomePage{
 
     private readonly adminPanel: Locator;
     private readonly dashboardPanel: Locator;
-    private readonly myInfo: Locator;
- 
+
     constructor(private page: Page){
         this.adminPanel = page.getByRole('link', {name: 'Admin'});
         this.dashboardPanel = page.getByRole('link', {name:'Dashboard'});
-        
     }
 
     async openAdminPanel(){
@@ -20,7 +18,9 @@ export class HomePage{
         await this.dashboardPanel.click();
     }
 
-
-
+    async logout(){
+        await this.page.locator('.oxd-userdropdown-tab').click();
+        await this.page.getByRole('menuitem', {name: 'Logout'}).click();
+    }
 
 }

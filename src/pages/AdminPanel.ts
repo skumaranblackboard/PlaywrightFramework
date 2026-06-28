@@ -51,7 +51,13 @@ export class AdminPanel{
         await this.confirmPassword.fill(ConfirmPassword);
     }
 
-    
+    async searchByUsername(username: string){
+        await this.page.getByRole('textbox').first().fill(username);
+        await this.page.getByRole('button', {name: 'Search'}).click();
+    }
 
+    async getTableRowCount(){
+        return this.page.locator('.oxd-table-body .oxd-table-row');
+    }
 
 }
