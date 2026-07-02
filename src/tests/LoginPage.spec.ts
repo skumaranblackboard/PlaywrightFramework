@@ -1,16 +1,18 @@
 import {test} from '../fixtures/baseTest'
+import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 
 
 test.describe("Orange HRMS Login", () =>{
 
-test("Admin Login", async({page}) => {
-    const login = new LoginPage(page);
-    await login.open();
-    await login.loginAs('Admin', 'admin123');
+test("TC001: Admin Login", async({loginPage, homePage}) => {
+    await loginPage.open();
+    await loginPage.loginAs('Admin', 'admin123');
+    await homePage.assertDashboardHeader();
+    await homePage.assertUpgradePanel();
 })
 
-test("Open Dashboard", async({loginPage, homePage, adminPanel}) => {
+test("TC002: Open Dashboard", async({loginPage, homePage, adminPanel}) => {
     await loginPage.open();
     await loginPage.loginAs('Admin', 'admin123');
     await homePage.openAdminPanel();
