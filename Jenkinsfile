@@ -26,13 +26,22 @@ pipeline {
             }
             post {
                 always {
+                    sh 'npx allure generate allure-results --clean -o allure-report || true'
                     publishHTML(target: [
                         allowMissing         : true,
                         alwaysLinkToLastBuild: true,
                         keepAll              : true,
                         reportDir            : 'playwright-report',
                         reportFiles          : 'index.html',
-                        reportName           : 'Playwright HTML Report'
+                        reportName           : 'Playwright Report'
+                    ])
+                    publishHTML(target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : 'allure-report',
+                        reportFiles          : 'index.html',
+                        reportName           : 'Allure Report'
                     ])
                 }
             }
