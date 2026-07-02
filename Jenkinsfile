@@ -26,7 +26,7 @@ pipeline {
             }
             post {
                 always {
-                    sh 'npx allure generate allure-results --clean -o allure-report || true'
+                    sh 'npx allure generate --cwd allure-results --output allure-report --clean || true'
                     publishHTML(target: [
                         allowMissing         : true,
                         alwaysLinkToLastBuild: true,
