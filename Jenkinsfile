@@ -38,17 +38,6 @@ pipeline {
             }
         }
 
-        stage('Publish Allure Report') {
-            steps {
-                allure([
-                    includeProperties: false,
-                    jdk              : '',
-                    reportBuildPolicy: 'ALWAYS',
-                    results          : [[path: 'allure-results']]
-                ])
-            }
-        }
-
     }
 
     post {
