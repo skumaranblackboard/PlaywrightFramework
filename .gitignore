@@ -10,3 +10,7 @@ node_modules/
 # Reports & logs
 allure-results/
 logs/
+
+# Environment — never commit secrets
+.env
+auth/

@@ -1,42 +1,37 @@
-import { Locator, Page } from '@playwright/test';
-import { createLogger, Logger } from '../utility/logger';
+import { Locator, Page, test } from '@playwright/test';
+import { DashboardPage } from './DashboardPage';
 
 export class LoginPage {
-
-    static readonly PATH = 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login';
-
-    // private readonly page: Page;
-    private readonly log: Logger;
     private readonly usernameInput: Locator;
     private readonly passwordInput: Locator;
     private readonly loginButton: Locator;
-    private readonly errorBox: Locator;
+    private readonly errorMessage: Locator;
 
     constructor(private page: Page) {
-        this.log = createLogger('LoginPage');
-        this.usernameInput = page.locator('[placeholder="Username"]');
-        this.passwordInput = page.locator('[placeholder="Password"]');
-        this.loginButton = page.getByRole('button', {name: 'Login'} );
-        this.errorBox = page.locator('[data-test="error"]');
+        this.usernameInput = page.locator('#username');
+        this.passwordInput = page.locator('#password');
+        this.loginButton = page.locator('#loginbtn');
+        this.errorMessage = page.locator('.loginerrors');
     }
 
-    async open(){
-        await this.page.goto(LoginPage.PATH);
+    async open(): Promise<void> {
+        await test.step('Navigate to Moodle login page', async () => {
+            await this.page.goto('/login/index.php');
+        });
     }
 
-    async loginAs(username: string, password: string): Promise<void> {
-        this.log.info(`loginAs ${username}`);
-        await this.usernameInput.fill(username);
-        await this.passwordInput.fill(password);
-        await this.loginButton.click();
+    async loginAs(username: string, password: string): Promise<DashboardPage> {
+        await test.step(`Login as ${username}`, async () => {
+            await this.usernameInput.fill(username);
+            await this.passwordInput.fill(password);
+            await this.loginButton.click();
+        });
+        return new DashboardPage(this.page);
     }
 
-    async getAlertMessage(): Promise<string | null> {
-        return this.errorBox.textContent();
+    async getErrorMessage(): Promise<Locator> {
+        return test.step('Get login error message', async () => {
+            return this.errorMessage;
+        });
     }
-
-    async getValidationErrors() {
-        return this.page.locator('.oxd-input-field-error-message');
-    }
-
 }
