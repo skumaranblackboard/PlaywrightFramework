@@ -1,5 +1,4 @@
 import { Locator, Page, test } from '@playwright/test';
-import { DashboardPage } from './DashboardPage';
 
 export class LoginPage {
     private readonly usernameInput: Locator;
@@ -20,13 +19,12 @@ export class LoginPage {
         });
     }
 
-    async loginAs(username: string, password: string): Promise<DashboardPage> {
+    async loginAs(username: string, password: string): Promise<void> {
         await test.step(`Login as ${username}`, async () => {
             await this.usernameInput.fill(username);
             await this.passwordInput.fill(password);
             await this.loginButton.click();
         });
-        return new DashboardPage(this.page);
     }
 
     async getErrorMessage(): Promise<Locator> {

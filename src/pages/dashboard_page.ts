@@ -1,5 +1,4 @@
 import { expect, Page, test } from '@playwright/test';
-import { LoginPage } from './LoginPage';
 
 export class DashboardPage {
     constructor(private page: Page) {}
@@ -24,11 +23,10 @@ export class DashboardPage {
         return this;
     }
 
-    async logout(): Promise<LoginPage> {
+    async logout(): Promise<void> {
         await test.step('Logout', async () => {
             await this.page.locator('.usermenu').click();
             await this.page.getByRole('link', { name: 'Log out' }).click();
         });
-        return new LoginPage(this.page);
     }
 }

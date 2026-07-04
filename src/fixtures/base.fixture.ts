@@ -1,6 +1,6 @@
 import { test as base } from './auth.fixtures';
-import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
+import { LoginPage } from '../pages/login_page';
+import { DashboardPage } from '../pages/dashboard_page';
 
 type PageFixture = {
     loginPage: LoginPage;
