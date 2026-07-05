@@ -1,6 +1,6 @@
 import { APIRequestContext } from '@playwright/test';
 
-const ENDPOINT = `${process.env.BASE_URL}/webservice/rest/server.php`;
+const ENDPOINT = '/webservice/rest/server.php';
 
 export interface CreatedUser {
     id: number;

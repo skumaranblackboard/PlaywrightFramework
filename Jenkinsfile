@@ -7,8 +7,10 @@ pipeline {
     }
 
     environment {
-        CI   = 'true'
-        PATH = "/opt/homebrew/bin:${env.PATH}"
+        CI           = 'true'
+        PATH         = "/opt/homebrew/bin:${env.PATH}"
+        BASE_URL     = 'https://sandbox.moodledemo.net'
+        MOODLE_TOKEN = credentials('moodle-token')
     }
 
     stages {
