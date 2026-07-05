@@ -3,6 +3,7 @@ pipeline {
 
     triggers {
         cron('H 22 * * *')
+        pollSCM('H/2 * * * *')
     }
 
     environment {
@@ -24,9 +25,14 @@ pipeline {
             }
         }
 
-        stage('Critical Tests') {
+        stage('Playwright Automation') {
             steps {
                 sh 'npm run test:ci'
+                script {
+                    if (currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause')) {
+                        sh 'npm run test:regression'
+                    }
+                }
             }
             post {
                 always {
@@ -46,54 +52,6 @@ pipeline {
                         reportDir            : 'allure-report',
                         reportFiles          : 'index.html',
                         reportName           : 'Allure Report'
-                    ])
-                }
-            }
-        }
-
-        stage('Oven Stability Check') {
-            steps {
-                sh 'npm run test:oven'
-            }
-            post {
-                always {
-                    publishHTML(target: [
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : 'playwright-report',
-                        reportFiles          : 'index.html',
-                        reportName           : 'Oven Stability Report'
-                    ])
-                }
-            }
-        }
-
-        stage('Non-Critical Tests') {
-            when {
-                triggeredBy 'TimerTrigger'
-            }
-            steps {
-                sh 'npm run test:regression'
-            }
-            post {
-                always {
-                    sh 'npm run report:allure || true'
-                    publishHTML(target: [
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : 'playwright-report',
-                        reportFiles          : 'index.html',
-                        reportName           : 'Playwright Report (Nightly)'
-                    ])
-                    publishHTML(target: [
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : 'allure-report',
-                        reportFiles          : 'index.html',
-                        reportName           : 'Allure Report (Nightly)'
                     ])
                 }
             }
