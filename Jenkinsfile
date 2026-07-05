@@ -55,6 +55,7 @@ pipeline {
                         reportFiles          : 'index.html',
                         reportName           : 'Allure Report'
                     ])
+                    archiveArtifacts artifacts: 'playwright-report/**,allure-report/**', allowEmptyArchive: true
                 }
             }
         }
@@ -67,9 +68,6 @@ pipeline {
         }
         failure {
             echo "Tests failed. Check the Playwright and Allure reports."
-        }
-        always {
-            archiveArtifacts artifacts: 'playwright-report/**,allure-report/**', allowEmptyArchive: true
         }
     }
 }
