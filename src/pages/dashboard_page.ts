@@ -1,4 +1,5 @@
 import { expect, Page, test } from '@playwright/test';
+import { CoursePage } from './course_page';
 
 export class DashboardPage {
     constructor(private page: Page) {}
@@ -9,11 +10,11 @@ export class DashboardPage {
         });
     }
 
-    async navigateToMyCourses(): Promise<DashboardPage> {
+    async navigateToMyCourses(): Promise<CoursePage> {
         await test.step('Navigate to My courses', async () => {
             await this.page.goto('/my/courses');
         });
-        return this;
+        return new CoursePage(this.page);
     }
 
     async navigateToProfile(): Promise<DashboardPage> {
