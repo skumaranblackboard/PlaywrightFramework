@@ -10,6 +10,7 @@ node_modules/
 
 # Reports & logs
 allure-results/
+allure-report/
 logs/
 
 # Environment — never commit secrets
