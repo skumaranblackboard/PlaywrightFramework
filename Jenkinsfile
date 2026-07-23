@@ -8,7 +8,8 @@ pipeline {
 
     environment {
         CI              = 'true'
-        PATH            = "/opt/homebrew/bin:${env.PATH}"
+        // /opt/homebrew/bin -> node/npm; /usr/local/bin -> docker (Docker Desktop symlink).
+        PATH            = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
         // Self-hosted Moodle from docker-compose.yml (ephemeral, so creds are not secret).
         BASE_URL        = 'http://localhost:8090'
         MOODLE_USERNAME = 'admin'
