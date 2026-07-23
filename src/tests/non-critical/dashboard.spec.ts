@@ -18,6 +18,7 @@ test.describe('Dashboard', { tag: '@regression' }, () => {
     });
 
     test('Logout redirects to login page', async ({ dashboardPage, page }) => {
+        await page.goto('/my/');
         await dashboardPage.logout();
         await expect(page).toHaveURL(/\/login/);
         await expect(page.locator('#loginbtn')).toBeVisible();

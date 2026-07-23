@@ -1,0 +1,54 @@
+# Self-hosted Moodle for the Playwright framework.
+# A real Moodle instance with a known admin account. Web services are turned on
+# afterwards by scripts/provision-webservices.php (npm run moodle:provision).
+#
+#   npm run moodle:setup     # up + wait + provision (first boot installs the DB, ~2-4 min)
+#   npm run moodle:down      # stop and remove volumes
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: moodle
+      POSTGRES_USER: moodle
+      POSTGRES_PASSWORD: moodle
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U moodle']
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  moodle:
+    image: erseco/alpine-moodle:latest
+    ports:
+      - '8080:8080'
+    environment:
+      # wwwroot must match exactly how the browser/tests reach it, port included.
+      SITE_URL: http://localhost:8080
+      DB_TYPE: pgsql
+      DB_HOST: db
+      DB_PORT: '5432'
+      DB_NAME: moodle
+      DB_USER: moodle
+      DB_PASS: moodle
+      MOODLE_USERNAME: admin
+      MOODLE_PASSWORD: Admin#12345
+      MOODLE_EMAIL: admin@example.com
+      MOODLE_SITENAME: AutomationMoodle
+    volumes:
+      - moodledata:/var/www/moodledata
+      - ./scripts:/scripts:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8080/login/index.php']
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      start_period: 120s
+
+volumes:
+  db_data:
+  moodledata:

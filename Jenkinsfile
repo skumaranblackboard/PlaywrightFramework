@@ -9,11 +9,11 @@ pipeline {
     environment {
         CI              = 'true'
         PATH            = "/opt/homebrew/bin:${env.PATH}"
-        BASE_URL        = 'https://sandbox.moodledemo.net'
-        // Single "Username with password" credential; Jenkins exposes _USR and _PSW.
-        MOODLE          = credentials('moodle-admin')
-        MOODLE_USERNAME = "${MOODLE_USR}"
-        MOODLE_PASSWORD = "${MOODLE_PSW}"
+        // Self-hosted Moodle from docker-compose.yml (ephemeral, so creds are not secret).
+        BASE_URL        = 'http://localhost:8080'
+        MOODLE_USERNAME = 'admin'
+        MOODLE_PASSWORD = 'Admin#12345'
+        MOODLE_SERVICE  = 'automation'
     }
 
     stages {
@@ -27,6 +27,14 @@ pipeline {
         stage('Install Playwright Browsers') {
             steps {
                 sh 'npx playwright install chromium --with-deps'
+            }
+        }
+
+        stage('Start Moodle') {
+            steps {
+                sh 'docker compose up -d'
+                sh 'npm run moodle:wait'
+                sh 'npm run moodle:provision'
             }
         }
 
@@ -66,6 +74,9 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'docker compose down -v || true'
+        }
         success {
             echo "All tests passed!"
         }

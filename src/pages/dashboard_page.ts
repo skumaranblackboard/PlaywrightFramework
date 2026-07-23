@@ -12,7 +12,7 @@ export class DashboardPage {
 
     async navigateToMyCourses(): Promise<CoursePage> {
         await test.step('Navigate to My courses', async () => {
-            await this.page.goto('/my/courses');
+            await this.page.goto('/my/courses.php');
         });
         return new CoursePage(this.page);
     }
@@ -26,8 +26,8 @@ export class DashboardPage {
 
     async logout(): Promise<void> {
         await test.step('Logout', async () => {
-            await this.page.locator('.usermenu').click();
-            await this.page.getByRole('link', { name: 'Log out' }).click();
+            await this.page.locator('#user-menu-toggle').click();
+            await this.page.getByRole('menuitem', { name: 'Log out' }).click();
         });
     }
 }

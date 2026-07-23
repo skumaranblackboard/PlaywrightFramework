@@ -9,8 +9,8 @@ test.describe('Course', { tag: '@smoke' }, () => {
 
         await loginPage.open();
         await loginPage.loginAs(env.instructor!.username, DEFAULT_PASSWORD);
-        await page.goto('/my/courses');
-        await expect(page.getByText(env.course!.fullname)).toBeVisible();
+        await page.goto('/my/courses.php');
+        await expect(page.getByRole('link', { name: env.course!.fullname }).first()).toBeVisible();
     });
 
 });

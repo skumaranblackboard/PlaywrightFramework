@@ -18,7 +18,7 @@ test.describe('Login', { tag: '@smoke' }, () => {
         await loginPage.loginAs('invaliduser99', 'wrongpassword99');
         const error = await loginPage.getErrorMessage();
         await expect(error).toBeVisible();
-        await expect(error).toContainText('Invalid login');
+        await expect(error).toContainText('Unable to log in');
     });
 
 });

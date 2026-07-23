@@ -10,7 +10,7 @@ export class LoginPage {
         this.usernameInput = page.locator('#username');
         this.passwordInput = page.locator('#password');
         this.loginButton = page.locator('#loginbtn');
-        this.errorMessage = page.locator('.loginerrors');
+        this.errorMessage = page.locator('#loginerrormessage');
     }
 
     async open(): Promise<void> {

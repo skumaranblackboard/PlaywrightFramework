@@ -83,7 +83,8 @@ export class MoodleApi {
         });
         const body = await response.json();
         this.assertOk(body, 'core_course_create_courses');
-        return body[0];
+        // The API returns only { id, shortname }; preserve the fullname we sent.
+        return { ...body[0], fullname: payload.fullname };
     }
 
     async deleteCourse(courseId: number): Promise<void> {
