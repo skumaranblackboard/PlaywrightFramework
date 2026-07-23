@@ -1,6 +1,7 @@
 import { test, expect } from '../../fixtures/base.fixture';
+import { TEACHER_STATE } from '../../setup/stored-users';
 
-test.use({ storageState: 'auth/teacher.json' });
+test.use({ storageState: TEACHER_STATE });
 
 test.describe('Dashboard', { tag: '@regression' }, () => {
 
