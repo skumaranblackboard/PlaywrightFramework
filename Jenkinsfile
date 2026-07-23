@@ -10,7 +10,7 @@ pipeline {
         CI              = 'true'
         PATH            = "/opt/homebrew/bin:${env.PATH}"
         // Self-hosted Moodle from docker-compose.yml (ephemeral, so creds are not secret).
-        BASE_URL        = 'http://localhost:8080'
+        BASE_URL        = 'http://localhost:8090'
         MOODLE_USERNAME = 'admin'
         MOODLE_PASSWORD = 'Admin#12345'
         MOODLE_SERVICE  = 'automation'

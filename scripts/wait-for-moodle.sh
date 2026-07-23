@@ -3,7 +3,7 @@
 # First boot installs the database and can take several minutes.
 set -euo pipefail
 
-URL="${BASE_URL:-http://localhost:8080}/login/index.php"
+URL="${BASE_URL:-http://localhost:8090}/login/index.php"
 TIMEOUT="${MOODLE_WAIT_TIMEOUT:-600}"   # seconds
 INTERVAL=10
 elapsed=0

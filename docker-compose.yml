@@ -22,10 +22,14 @@ services:
   moodle:
     image: erseco/alpine-moodle:latest
     ports:
-      - '8080:8080'
+      # Host 8090 to avoid colliding with Jenkins on 8080. Container stays 8080.
+      - '8090:8080'
     environment:
       # wwwroot must match exactly how the browser/tests reach it, port included.
-      SITE_URL: http://localhost:8080
+      SITE_URL: http://localhost:8090
+      # Host port (8090) differs from the container's internal port (8080), so
+      # Moodle must trust the Host header instead of enforcing the server port.
+      REVERSEPROXY: 'true'
       DB_TYPE: pgsql
       DB_HOST: db
       DB_PORT: '5432'
