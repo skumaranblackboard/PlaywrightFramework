@@ -4,6 +4,7 @@ import * as path from 'path';
 import dotenv from 'dotenv';
 import { generateUser, DEFAULT_PASSWORD } from '../testdata/builders/UserBuilder';
 import { MoodleApi } from '../testdata/api/data-api';
+import { fetchMoodleToken } from '../testdata/api/token';
 import { USERS_PATH, TEACHER_STATE, STUDENT_STATE } from './stored-users';
 
 dotenv.config();
@@ -36,7 +37,8 @@ export default async function globalSetup() {
     if (!fs.existsSync(authDir)) fs.mkdirSync(authDir);
 
     const apiContext = await request.newContext({ baseURL: process.env.BASE_URL });
-    const api = new MoodleApi(apiContext, process.env.MOODLE_TOKEN!);
+    const token = await fetchMoodleToken(apiContext);
+    const api = new MoodleApi(apiContext, token);
 
     const teacherPayload = generateUser({}, 'teach');
     const studentPayload = generateUser({}, 'stu');

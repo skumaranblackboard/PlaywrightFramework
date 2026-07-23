@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { MoodleApi } from '../testdata/api/data-api';
+import { fetchMoodleToken } from '../testdata/api/token';
 import { EnvironmentBuilder, CreatedEnvironment } from '../testdata/builders/EnvironmentBuilder';
 
 export type CleanupRegistrar = {
@@ -13,7 +14,7 @@ export type ApiFixture = {
 
 export const test = base.extend<ApiFixture>({
     create: async ({ request }, use) => {
-        const api = new MoodleApi(request, process.env.MOODLE_TOKEN!);
+        const api = new MoodleApi(request, await fetchMoodleToken(request));
         await use(new EnvironmentBuilder(api));
     },
     cleanup: async ({ request }, use) => {
@@ -21,7 +22,7 @@ export const test = base.extend<ApiFixture>({
 
         await use({ register: (env) => envList.push(env) });
 
-        const api = new MoodleApi(request, process.env.MOODLE_TOKEN!);
+        const api = new MoodleApi(request, await fetchMoodleToken(request));
         for (const env of envList) {
             if (env.user?.id) await api.deleteUser(env.user.id);
             if (env.instructor?.id) await api.deleteUser(env.instructor.id);

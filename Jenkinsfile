@@ -7,10 +7,13 @@ pipeline {
     }
 
     environment {
-        CI           = 'true'
-        PATH         = "/opt/homebrew/bin:${env.PATH}"
-        BASE_URL     = 'https://sandbox.moodledemo.net'
-        MOODLE_TOKEN = credentials('moodle-token')
+        CI              = 'true'
+        PATH            = "/opt/homebrew/bin:${env.PATH}"
+        BASE_URL        = 'https://sandbox.moodledemo.net'
+        // Single "Username with password" credential; Jenkins exposes _USR and _PSW.
+        MOODLE          = credentials('moodle-admin')
+        MOODLE_USERNAME = "${MOODLE_USR}"
+        MOODLE_PASSWORD = "${MOODLE_PSW}"
     }
 
     stages {
