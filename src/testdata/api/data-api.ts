@@ -13,11 +13,31 @@ export interface CreatedCourse {
     fullname: string;
 }
 
+interface MoodleException {
+    exception: string;
+    errorcode: string;
+    message: string;
+    debuginfo?: string;
+}
+
+function isMoodleException(body: unknown): body is MoodleException {
+    return !!body && typeof body === 'object' && 'exception' in body;
+}
+
 export class MoodleApi {
     constructor(
         private request: APIRequestContext,
         private token: string,
     ) {}
+
+    private assertOk(body: unknown, context: string): void {
+        if (isMoodleException(body)) {
+            throw new Error(
+                `Moodle API "${context}" failed: [${body.errorcode}] ${body.message}` +
+                (body.debuginfo ? ` (${body.debuginfo})` : ''),
+            );
+        }
+    }
 
     async createUser(payload: {
         username: string;
@@ -37,6 +57,7 @@ export class MoodleApi {
             },
         });
         const body = await response.json();
+        this.assertOk(body, 'core_user_create_users');
         return body[0];
     }
 
@@ -61,6 +82,7 @@ export class MoodleApi {
             },
         });
         const body = await response.json();
+        this.assertOk(body, 'core_course_create_courses');
         return body[0];
     }
 
@@ -73,7 +95,7 @@ export class MoodleApi {
 
     async enrollUser(userId: number, courseId: number, role: 'editingteacher' | 'student'): Promise<void> {
         const roleId = role === 'editingteacher' ? 3 : 5;
-        await this.request.post(ENDPOINT, {
+        const response = await this.request.post(ENDPOINT, {
             params: { wstoken: this.token, wsfunction: 'enrol_manual_enrol_users', moodlewsrestformat: 'json' },
             form: {
                 'enrolments[0][roleid]': String(roleId),
@@ -81,5 +103,8 @@ export class MoodleApi {
                 'enrolments[0][courseid]': String(courseId),
             },
         });
+        // enrol_manual_enrol_users returns null on success, an exception object on failure.
+        const text = await response.text();
+        if (text) this.assertOk(JSON.parse(text), 'enrol_manual_enrol_users');
     }
 }

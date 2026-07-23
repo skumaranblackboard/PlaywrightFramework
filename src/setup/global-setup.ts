@@ -15,7 +15,18 @@ async function loginAndSave(username: string, statePath: string) {
     await page.locator('#username').fill(username);
     await page.locator('#password').fill(DEFAULT_PASSWORD);
     await page.locator('#loginbtn').click();
-    await page.waitForURL(/\/my/);
+    try {
+        await page.waitForURL(/\/my/);
+    } catch {
+        const landedUrl = page.url();
+        const loginError = await page.locator('#loginerrormessage, .loginerrors').textContent().catch(() => null);
+        await browser.close();
+        throw new Error(
+            `Login for "${username}" did not reach the dashboard. ` +
+            `Landed on ${landedUrl}.` +
+            (loginError ? ` Login error: "${loginError.trim()}".` : ''),
+        );
+    }
     await page.context().storageState({ path: statePath });
     await browser.close();
 }
